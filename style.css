@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", "sans-serif";
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  flex-direction: column;
+  background: #fff;
+}
+
+.container {
+  max-width: 650px;
+  width: 100%;
+  padding: 30px;
+  background: #313538;
+  border-radius: 10px;
+  box-shadow: rgba(48, 50, 47, 0.2) 10px 18px 24px;
+}
+
+.drag-area {
+  overflow: hidden;
+  height: 500px;
+  /* width: 500px; */
+  border: 3px dashed #4b4d50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10px auto;
+  position: relative;
+}
+
+.image-area {
+  max-height: 470px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 10px auto;
+  transition: transform 0.1s ease;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.title {
+  margin-bottom: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.title.active {
+  margin-bottom: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.drag-area .icon {
+  font-size: 50px;
+  color: #1683ff;
+}
+
+.drag-area .header {
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.drag-area .support {
+  font-size: 12px;
+  color: azure;
+  margin: 10px 0 15px 0;
+}
+
+.drag-area .button {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1683ff;
+  cursor: pointer;
+}
+
+.drag-area.active {
+  border: 2px solid #606366;
+}
+
+/* .image-area.active {
+  border: none;
+} */
+.image-area:active {
+  cursor: grabbing;
+}
+
+.image-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tools {
+  display: none;
+}
+
+.tools.active {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  background-color: #313538;
+  border: none;
+}
+
+.btn:hover {
+  background-color: #313538;
+  cursor: pointer;
+}
+
+.btn:focus {
+  box-shadow: none;
+}

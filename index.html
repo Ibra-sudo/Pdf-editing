@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Editing</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Cropper Link -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h3 class="title">Upload your File</h3>
+      <div class="tools">
+        <button class="btn" id="btnLeft">
+          <i class="fa-solid fa-rotate-left" style="color: #ffffff"></i>
+        </button>
+        <button class="btn" id="btnRight">
+          <i class="fa-solid fa-rotate-right" style="color: #ffffff"></i>
+        </button>
+        <button class="btn" id="btnMinus">
+          <i class="fa-solid fa-minus" style="color: #ffffff"></i>
+        </button>
+        <button class="btn" id="btnPlus">
+          <i class="fa-solid fa-plus" style="color: #ffffff"></i>
+        </button>
+        <button class="btn" id="btnCrop">
+          <i class="fa-solid fa-crop" style="color: #ffffff"></i>
+        </button>
+        <button class="btn" id="btnDownload">
+          <i class="fa-solid fa-download" style="color: #ffffff"></i>
+        </button>
+      </div>
+      <div class="drag-area">
+        <div class="image-area">
+          <div class="icon">
+            <i class="fas fa-images"></i>
+          </div>
+
+          <span class="header">Drag & Drop</span>
+          <span class="header">or <span class="button">browes</span></span>
+          <input type="file" hidden />
+          <span class="support">Supprts: JEPG, JPG, PDF</span>
+        </div>
+      </div>
+    </div>
+    <!-- Crooper Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <!-- Pdf Js -->
+    <!-- <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script> -->
+    <!-- <script type="text/javascript" src="pdf.worker.js"></script> -->
+
+    <script src="app.js"></script>
+  </body>
+</html>
