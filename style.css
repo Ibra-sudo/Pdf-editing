@@ -91,9 +91,6 @@ body {
   border: 2px solid #606366;
 }
 
-/* .image-area.active {
-  border: none;
-} */
 .image-area:active {
   cursor: grabbing;
 }
