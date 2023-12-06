@@ -125,9 +125,19 @@ body {
   box-shadow: none;
 }
 
+.scaleDisplay {
+  height: 35px;
+  width: 72px;
+  padding: 8px;
+  border: 2px solid #4b4d50;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #fff;
+}
+
 .display {
   height: 35px;
-  width: 81px;
+  width: 89px;
   padding: 8px;
   border: 2px solid #4b4d50;
   border-radius: 4px;
