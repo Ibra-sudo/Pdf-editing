@@ -132,7 +132,7 @@ function displayPdf() {
   let fileReader = new FileReader();
   fileReader.onload = () => {
     let fileURL = fileReader.result;
-    let pdfTag = `<embed id="pdfToCrop" src="${fileURL}#toolbar=0" type="application/pdf" style="width: 500px; height: 600px;" />`;
+    let pdfTag = `<embed id="pdfToCrop" src="${fileURL}#toolbar=0" type="application/pdf" style="width: 300%; height: 700px;" />`;
     imageArea.innerHTML = pdfTag;
     // btnCrop.addEventListener("click", function () {
     //   cropper = new Cropper(document.getElementById("pdfToCrop"), {
