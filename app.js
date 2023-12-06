@@ -6,6 +6,9 @@ const dragText = document.querySelector(".header");
 const btnLeft = document.querySelector("#btnLeft");
 const btnRight = document.querySelector("#btnRight");
 const btnMinus = document.querySelector("#btnMinus");
+const zoomDisplay = document.querySelector("#zoomDisplay");
+const heightDisplay = document.querySelector("#heightDisplay");
+const widthDisplay = document.querySelector("#widthDisplay");
 const btnPlus = document.querySelector("#btnPlus");
 const btnCrop = document.querySelector("#btnCrop");
 const btnDownload = document.querySelector("#btnDownload");
@@ -15,6 +18,10 @@ let input = document.querySelector("input");
 
 let rotation = 0;
 let scale = 1;
+const originalWidth = 200;
+const originalHeight = 100;
+
+const cmPerPixel = 0.1;
 let startX, startY, startTranslateX, startTranslateY;
 let isDragging = false;
 
@@ -30,10 +37,12 @@ btnRight.addEventListener("click", () => {
 btnMinus.addEventListener("click", () => {
   scale = Math.max(0.2, scale - 0.1);
   applyTransform();
+  displayZoomInfo();
 });
 btnPlus.addEventListener("click", () => {
   scale = Math.min(2.5, scale + 0.1);
   applyTransform();
+  displayZoomInfo();
 });
 
 imageArea.addEventListener("mousedown", startDrag);
@@ -41,7 +50,7 @@ imageArea.addEventListener("mousemove", dragImage);
 imageArea.addEventListener("mouseup", endDrag);
 imageArea.addEventListener("mouseleave", endDrag);
 
-btnDownload.addEventListener("click", cropImage);
+btnDownload.addEventListener("click", downloadImage);
 
 let file;
 
@@ -81,6 +90,7 @@ dragArea.addEventListener("dragleave", (e) => {
 dragArea.addEventListener("drop", (e) => {
   e.preventDefault();
   file = e.dataTransfer.files[0];
+  // console.log(file);
   displayFile();
 });
 
@@ -107,9 +117,8 @@ function displayImage() {
   fileReader.onload = () => {
     let fileURL = fileReader.result;
     // console.log(fileURL);
-    let imgTag = `<img id="imageToCrop" src="${fileURL}" alt="" style="width: 100%; height: auto; max-width: 1920px; max-height: 1200px;" >`;
+    let imgTag = `<img id="imageToCrop" src="${fileURL}" alt="" style="width: 100%; height: 100%; max-width: 1920px; max-height: 1200px;" >`;
     imageArea.innerHTML = imgTag;
-
     btnCrop.addEventListener("click", function () {
       cropper = new Cropper(document.getElementById("imageToCrop"), {
         aspectRatio: 16 / 24, // You can adjust the aspect ratio as needed
@@ -196,6 +205,17 @@ function endDrag() {
   imageArea.style.cursor = "grab";
 }
 
+function displayZoomInfo() {
+  const zoomPercent = Math.round(scale * 100);
+  const heightCm = Math.round(originalHeight * scale * cmPerPixel);
+  const widthCm = Math.round(originalWidth * scale * cmPerPixel);
+
+  // Display the zoom level, height, and width
+  zoomDisplay.textContent = `S: ${zoomPercent} %`;
+  heightDisplay.textContent = `H: ${heightCm} cm`;
+  widthDisplay.textContent = `W: ${widthCm} cm`;
+}
+
 function applyTransform() {
   const translateX = getTranslateX();
   const translateY = getTranslateY();
@@ -220,4 +240,26 @@ function getTranslateY() {
 
 function setTranslate(translateX, translateY) {
   imageArea.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+}
+
+function downloadImage() {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  // const image = document.getElementById('image');
+
+  // Set canvas dimensions to match the image
+  canvas.width = Image.width;
+  canvas.height = Image.height;
+
+  // Draw the image onto the canvas
+  ctx.drawImage(Image, 0, 0);
+
+  // Convert the canvas content to a data URL (PNG format)
+  const dataUrl = canvas.toDataURL("image/png");
+
+  // Create a link element and trigger the download
+  const downloadLink = document.createElement("a");
+  downloadLink.href = dataUrl;
+  downloadLink.download = "edited_image.png";
+  downloadLink.click();
 }

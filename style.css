@@ -17,7 +17,8 @@ body {
 }
 
 .container {
-  max-width: 650px;
+  max-width: 50%;
+  max-height: 50%;
   width: 100%;
   padding: 30px;
   background: #313538;
@@ -107,7 +108,7 @@ body {
 
 .tools.active {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .btn {
@@ -122,4 +123,14 @@ body {
 
 .btn:focus {
   box-shadow: none;
+}
+
+.display {
+  height: 35px;
+  width: 81px;
+  padding: 8px;
+  border: 2px solid #4b4d50;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #fff;
 }
