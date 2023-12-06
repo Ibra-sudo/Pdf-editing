@@ -1,5 +1,5 @@
-const Title = document.querySelector(".title");
-const Tools = document.querySelector(".tools");
+const title = document.querySelector(".title");
+const tools = document.querySelector(".tools");
 const dragArea = document.querySelector(".drag-area");
 const imageArea = document.querySelector(".image-area");
 const dragText = document.querySelector(".header");
@@ -14,12 +14,10 @@ const btnCrop = document.querySelector("#btnCrop");
 const btnDownload = document.querySelector("#btnDownload");
 
 let button = document.querySelector(".button");
-let input = document.querySelector("input");
+let input = document.querySelector(".input");
 
 let rotation = 0;
 let scale = 1;
-const originalWidth = 200;
-const originalHeight = 100;
 
 const cmPerPixel = 0.1;
 let startX, startY, startTranslateX, startTranslateY;
@@ -50,6 +48,7 @@ imageArea.addEventListener("mousemove", dragImage);
 imageArea.addEventListener("mouseup", endDrag);
 imageArea.addEventListener("mouseleave", endDrag);
 
+btnCrop.addEventListener("click", cropImage);
 btnDownload.addEventListener("click", downloadImage);
 
 let file;
@@ -59,32 +58,32 @@ button.onclick = () => {
 };
 
 input.addEventListener("change", function () {
-  Title.textContent = "Edit";
+  title.textContent = "Edit";
   file = this.files[0];
   dragArea.classList.add("active");
   imageArea.classList.add("active");
-  Title.classList.add("active");
-  Tools.classList.add("active");
+  title.classList.add("active");
+  tools.classList.add("active");
   displayFile();
 });
 
 dragArea.addEventListener("dragover", (e) => {
   e.preventDefault();
   dragText.textContent = "Release to Upload";
-  Title.textContent = "Edit";
+  title.textContent = "Edit";
   dragArea.classList.add("active");
   imageArea.classList.add("active");
-  Title.classList.add("active");
-  Tools.classList.add("active");
+  title.classList.add("active");
+  tools.classList.add("active");
 });
 
 dragArea.addEventListener("dragleave", (e) => {
   dragText.textContent = "Drag & Drop";
-  Title.textContent = "Upload your File";
+  title.textContent = "Upload your File";
   dragArea.classList.remove("active");
   imageArea.classList.remove("active");
-  Title.classList.remove("active");
-  Tools.classList.remove("active");
+  title.classList.remove("active");
+  tools.classList.remove("active");
 });
 
 dragArea.addEventListener("drop", (e) => {
@@ -134,38 +133,13 @@ function displayPdf() {
   fileReader.onload = () => {
     let fileURL = fileReader.result;
     let pdfTag = `<embed id="pdfToCrop" src="${fileURL}#toolbar=0" type="application/pdf" style="width: 500px; height: 600px;" />`;
-    // let pdfTag = `<object data="${fileURL}" type="application/pdf" width="100%" height="100%">
-    //               <p>Your browser does not support viewing PDFs.
-    //               <a href="${fileURL}">Click here to download the PDF</a>.</p>
-    //             </object>`;
-    // let fileUint8Array = new Uint8Array(fileReader.result);
-    // // Load PDF using PDF.js
-    // pdfjsLib.getDocument({ data: fileUint8Array }).promise.then((pdfDoc) => {
-    //   // Assuming a single page PDF for simplicity
-    //   pdfDoc.getPage(1).then((page) => {
-    //     let canvas = document.createElement("canvas");
-    //     let context = canvas.getContext("2d");
-    //     let viewport = page.getViewport({ scale: 1 });
-
-    //     // Set canvas size
-    //     canvas.width = viewport.width;
-    //     canvas.height = viewport.height;
-
-    //     // Render PDF page on canvas
-    //     page.render({ canvasContext: context, viewport: viewport });
-
-    //     // Append canvas to the imageArea
-    //     imageArea.innerHTML = "";
-    //     imageArea.appendChild(canvas);
+    imageArea.innerHTML = pdfTag;
+    // btnCrop.addEventListener("click", function () {
+    //   cropper = new Cropper(document.getElementById("pdfToCrop"), {
+    //     aspectRatio: 16 / 24, // You can adjust the aspect ratio as needed
+    //     autoCrop: false,
     //   });
     // });
-    imageArea.innerHTML = pdfTag;
-    btnCrop.addEventListener("click", function () {
-      cropper = new Cropper(document.getElementById("pdfToCrop"), {
-        aspectRatio: 16 / 24, // You can adjust the aspect ratio as needed
-        autoCrop: false,
-      });
-    });
   };
   fileReader.readAsDataURL(file);
   // fileReader.readAsArrayBuffer(file);
@@ -206,14 +180,21 @@ function endDrag() {
 }
 
 function displayZoomInfo() {
-  const zoomPercent = Math.round(scale * 100);
-  const heightCm = Math.round(originalHeight * scale * cmPerPixel);
-  const widthCm = Math.round(originalWidth * scale * cmPerPixel);
+  const sizing = imageArea;
 
-  // Display the zoom level, height, and width
-  zoomDisplay.textContent = `S: ${zoomPercent} %`;
-  heightDisplay.textContent = `H: ${heightCm} cm`;
-  widthDisplay.textContent = `W: ${widthCm} cm`;
+  html2canvas(sizing).then((canvas) => {
+    const originalWidth = canvas.width;
+    const originalHeight = canvas.height;
+
+    const zoomPercent = Math.round(scale * 100);
+    const heightCm = Math.round(originalHeight * scale * cmPerPixel);
+    const widthCm = Math.round(originalWidth * scale * cmPerPixel);
+
+    // Display the zoom level, height, and width
+    zoomDisplay.textContent = `S: ${zoomPercent} %`;
+    heightDisplay.textContent = `H: ${heightCm} cm`;
+    widthDisplay.textContent = `W: ${widthCm} cm`;
+  });
 }
 
 function applyTransform() {
@@ -243,23 +224,14 @@ function setTranslate(translateX, translateY) {
 }
 
 function downloadImage() {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  // const image = document.getElementById('image');
+  const screenshotTarget = imageArea;
 
-  // Set canvas dimensions to match the image
-  canvas.width = Image.width;
-  canvas.height = Image.height;
-
-  // Draw the image onto the canvas
-  ctx.drawImage(Image, 0, 0);
-
-  // Convert the canvas content to a data URL (PNG format)
-  const dataUrl = canvas.toDataURL("image/png");
-
-  // Create a link element and trigger the download
-  const downloadLink = document.createElement("a");
-  downloadLink.href = dataUrl;
-  downloadLink.download = "edited_image.png";
-  downloadLink.click();
+  html2canvas(screenshotTarget).then((canvas) => {
+    const base64image = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = base64image;
+    link.download = "captured_image.png";
+    link.click();
+    link.remove();
+  });
 }
