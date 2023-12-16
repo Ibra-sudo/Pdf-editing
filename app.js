@@ -13,13 +13,17 @@ const btnPlus = document.querySelector("#btnPlus");
 const btnCrop = document.querySelector("#btnCrop");
 const btnDownload = document.querySelector("#btnDownload");
 
+previewImage = imageArea.querySelector("img");
+widthInput = document.querySelector(".width");
+heightInput = document.querySelector(".height");
+
 let button = document.querySelector(".button");
 let input = document.querySelector(".input");
 
 let rotation = 0;
 let scale = 1;
 
-const cmPerPixel = 0.1;
+// const cmPerPixel = 0.1;
 let startX, startY, startTranslateX, startTranslateY;
 let isDragging = false;
 
@@ -112,11 +116,10 @@ let cropper;
 
 function displayImage() {
   let fileReader = new FileReader();
-  // console.log(fileReader);
   fileReader.onload = () => {
     let fileURL = fileReader.result;
-    // console.log(fileURL);
     let imgTag = `<img id="imageToCrop" src="${fileURL}" alt="" style="width: 100%; height: 100%; max-width: 1920px; max-height: 1200px;" >`;
+
     imageArea.innerHTML = imgTag;
     btnCrop.addEventListener("click", function () {
       cropper = new Cropper(document.getElementById("imageToCrop"), {
@@ -156,7 +159,7 @@ function cropImage() {
 }
 
 function startDrag(e) {
-  if (e.button !== 0) return; // Only respond to left mouse button
+  if (e.button !== 0) return;
   isDragging = true;
   startX = e.clientX;
   startY = e.clientY;
@@ -179,25 +182,38 @@ function endDrag() {
   imageArea.style.cursor = "grab";
 }
 
+function pixelsToCm(pixels, dpi) {
+  const cmPerInch = 2.54;
+  return pixels / ((dpi * 1) / cmPerInch);
+}
+
 function displayZoomInfo() {
   const sizing = imageArea;
 
   html2canvas(sizing).then((canvas) => {
-    const originalWidth = canvas.width;
-    const originalHeight = canvas.height;
+    const dpi = 72;
 
-    // console.log("W", originalWidth);
-    // console.log("H", originalHeight);
-    const zoomPercent = Math.round(scale * 100);
-    const heightCm = Math.round(originalHeight * scale * cmPerPixel);
-    const widthCm = Math.round(originalWidth * scale * cmPerPixel);
-    // console.log("Wcm", widthCm);
-    // console.log("Hcm", heightCm);
+    previewImage.src = URL.createObjectURL(file);
 
-    // Display the zoom level, height, and width
-    zoomDisplay.textContent = `S: ${zoomPercent} %`;
-    heightDisplay.textContent = `H: ${heightCm} cm`;
-    widthDisplay.textContent = `W: ${widthCm} cm`;
+    previewImage.addEventListener("load", () => {
+      widthInput.value = previewImage.naturalWidth;
+      heightInput.value = previewImage.naturalHeight;
+
+      const widthInCm = pixelsToCm(widthInput.value, dpi);
+      const heightInCm = pixelsToCm(heightInput.value, dpi);
+
+      const zoomPercent = Math.round(scale * 100);
+      const heightCm = Math.round(heightInCm * scale);
+      const widthCm = Math.round(widthInCm * scale);
+
+      // console.log("Wcm", widthCm);
+      // console.log("Hcm", heightCm);
+
+      // Display the zoom level, height, and width
+      zoomDisplay.textContent = `S: ${zoomPercent} %`;
+      heightDisplay.textContent = `H: ${heightCm} cm`;
+      widthDisplay.textContent = `W: ${widthCm} cm`;
+    });
   });
 }
 
@@ -237,31 +253,7 @@ function downloadImage() {
     const rotatedWidth = canvas.height;
     const rotatedHeight = canvas.width;
 
-    pdf.addImage(
-      imgData,
-      "PNG",
-      70,
-      70,
-      rotatedWidth / 4,
-      rotatedHeight / 4,
-      null,
-      "medium",
-      90
-    );
-
-    // const aspectRatio = canvas.width / canvas.height;
-    // const scaleFactor = 0.5; // Adjust as needed
-    // pdf.addImage(
-    //   imgData,
-    //   "PNG",
-    //   25,
-    //   25,
-    //   canvas.width * scaleFactor,
-    //   (canvas.width * scaleFactor) / aspectRatio
-    // );
-
-    // console.log("cW", canvas.width);
-    // console.log("cH", canvas.height);
+    pdf.addImage(imgData, "PNG", 70, 70, rotatedWidth / 4, rotatedHeight / 4);
 
     pdf.save("captured_image.pdf");
     // const link = document.createElement("a");
@@ -271,44 +263,3 @@ function downloadImage() {
     // link.remove();
   });
 }
-
-// function downloadImage() {
-//   const screenshotTarget = imageArea;
-//   const rotationAngle = 45; // Adjust the rotation angle as needed
-
-//   html2canvas(screenshotTarget).then((canvas) => {
-//     // Create a new canvas for rotation
-//     // const rotatedCanvas = document.createElement('canvas');
-//     // const rotatedContext = rotatedCanvas.getContext('2d');
-
-//     // Set the size of the rotated canvas to accommodate the rotated image
-//     rotatedCanvas.width = canvas.height;
-//     rotatedCanvas.height = canvas.width;
-
-//     // Rotate the canvas context
-//     rotatedContext.translate(canvas.height, 0);
-//     rotatedContext.rotate((rotationAngle * Math.PI) / 180);
-
-//     // Draw the rotated image onto the rotated canvas
-//     rotatedContext.drawImage(canvas, 0, 0);
-
-//     // Convert the rotated canvas to a data URL
-//     const rotatedImgData = rotatedCanvas.toDataURL("image/png");
-
-//     // Create a new jsPDF instance
-//     const pdf = new jsPDF();
-
-//     // Add the rotated image to the PDF, specifying position and dimensions
-//     pdf.addImage(
-//       rotatedImgData,
-//       "PNG",
-//       25,
-//       25,
-//       rotatedCanvas.height / 2,
-//       rotatedCanvas.width / 2
-//     );
-
-//     // Save the PDF with the specified name
-//     pdf.save("rotated_cropped_image.pdf");
-//   });
-// }

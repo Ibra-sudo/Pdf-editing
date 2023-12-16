@@ -66,8 +66,9 @@ body {
 }
 
 .drag-area .icon {
-  font-size: 50px;
-  color: #1683ff;
+  height: 60px;
+  width: 90px;
+  margin-bottom: 7px;
 }
 
 .drag-area .header {
